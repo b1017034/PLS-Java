@@ -26,7 +26,7 @@ Then, expanded to `src/`
 
 ### Export .JAR file
 
-#### All　Packages
+#### All Packages
 
 Type Command below
 
