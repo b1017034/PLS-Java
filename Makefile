@@ -1,7 +1,6 @@
 SUFFIX   := .jar
 COMPILER := tar
 
-ROOTDIR  = `pwd`/
 JARDIR   = lib/
 SRCDIR   = src/
 OUTDIR   = out/
@@ -10,14 +9,13 @@ SOURCES  = $(wildcard $(JARDIR)/*$(SUFFIX))
 OBJECTS  = $(notdir $(SOURCES:$(SUFFIX)=.class))
 TARGETS  = $(notdir $(basename $(SOURCES)))
 
-TEST     = $(JARDIR)$(1)$(SUFFIX)
 JAR_DIR  = $(shell jar -tf $(JARDIR)/$(1)$(SUFFIX))
 CLASS_DIR  = $(addsuffix .class,$(basename $(JAR_DIR)))
 EXPORTS  = $(join $(JAR_DIR),  $(addsuffix .class,$(basename $(JAR_DIR))))
 
 define IMPORTALL
 @if [ -d $(addprefix $(SRCDIR),$(dir $(firstword $(JAR_DIR)))) ]; then \
-	echo if you import $(1).jar, you should delete file below.; \
+	echo if you import $(1).jar, you should delete directory below.; \
 	$(foreach VAR,$(addprefix $(SRCDIR),$(dir $(JAR_DIR))),echo "$(VAR)"); \
 	\
 else \
@@ -28,7 +26,7 @@ fi
 
 endef
 
-define EXECHO
+define EXPORTALL
 $(1): $(1).class
 	@echo $(filter-out test/%,$(JAR_DIR))
 	cd $(SRCDIR) && jar -cvf ../$(OUTDIR)$(1).jar $(filter-out test/%,$(JAR_DIR)) $(filter-out test/%,$(CLASS_DIR))
@@ -43,10 +41,10 @@ endef
 
 .PHONY: all
 all: $(TARGETS)
-$(foreach VAR,$(TARGETS),$(eval $(call EXECHO,$(VAR))))
+$(foreach VAR,$(TARGETS),$(eval $(call EXPORTALL,$(VAR))))
 
-.PHONY: exall
-exall:
+.PHONY: import
+import:
 	$(foreach VAR,$(TARGETS),$(call IMPORTALL,$(VAR)))
 
 .PHONY: clean
