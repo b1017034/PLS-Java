@@ -7,7 +7,7 @@ put `.jar` file to `lib/` your want to import.
 ```
 /
 ├─ lib/
-│　├─xxxx.jar
+│　├─ xxxx.jar
 │　└─ yyyy.jar
 └─ out/
 ```
